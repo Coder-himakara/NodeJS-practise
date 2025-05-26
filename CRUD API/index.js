@@ -30,13 +30,27 @@ app.get('/api/products', async (req, res) => {
 
 app.get('/api/products/:id', async (req, res) => {
     try{
-        const {id} = req.params;
+        const {id} = req.params;// destructuring syntax
         const product = await Product.findById(id);
         res.status(200).json(product);
     }catch (error){
         res.status(500).json({message: error.message});
     }
 });
+
+app.put('/api/products/:id', async (req, res) => {
+    try{
+        const {id} = req.params;
+        const product = await Product.findByIdAndUpdate(id, req.body);
+        if (!product) {
+            return res.status(404).json({message: 'Product not found'});
+        }
+        const updatedProduct = await Product.findById(id);
+        res.status(200).json(updatedProduct);
+    }catch(error){
+        res.status(500).json({message: error.message});
+    }
+})
 
 mongoose.connect("mongodb+srv://admin:vsWCCOXZijZaECtx@backenddb.xaqkvlp.mongodb.net/?retryWrites=true&w=majority&appName=BackendDB")
     .then(() => {
